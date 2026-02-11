@@ -3,6 +3,7 @@ import { Inter, Poppins } from "next/font/google";
 
 import "./../../globals.css";
 import Sidebar from "../ui/sidebar";
+import QueryProvider from "@/app/lib/queryprovider";
 
 const inter = Poppins({
   variable: "--font-poppins",
@@ -25,7 +26,9 @@ export default function RootLayout({
       <body className={`$ ${inter.className} antialiase`}>
         <div className="flex">
           <Sidebar />
-          <div className="bg-primary-light flex-1">{children}</div>
+          <div className="bg-primary-light flex-1">
+            <QueryProvider>{children}</QueryProvider>
+          </div>
         </div>
       </body>
     </html>
