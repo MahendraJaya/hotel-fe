@@ -1,10 +1,9 @@
 "use client";
 import Button from "@/app/component/button";
-import useAuth from "@/app/hooks/use-auth";
-import { ApiResponse, IToken } from "@/app/types";
-import { AxiosError } from "axios";
+import useLoginUser from "@/app/hooks/use-auth";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 
 const AuthManagement = () => {
   const [formValues, setFormValues] = useState<{
@@ -12,7 +11,7 @@ const AuthManagement = () => {
     password: string;
   }>({ email: "", password: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const loginMutation = useAuth();
+  const {mutate, isError, isSuccess, data, error} = useLoginUser();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormValues({
@@ -24,20 +23,13 @@ const AuthManagement = () => {
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    loginMutation.mutate(formValues, {
-      onSuccess: (data) => {
-        localStorage.setItem("token", data.data.token);
-      },
-      onError: (error) => {
-        const e = error as AxiosError<ApiResponse<IToken>>;
-        console.log("masuk Error :", e.response?.data.message);
-      },
-    });
+    mutate(formValues);
 
     setIsSubmitting(false);
   };
   return (
     <div className="bg-white w-136 h-137 rounded-lg border-t-6 flex items-center flex-col py-12 px-17 border-primary">
+      <ToastContainer position="top-right" />
       <Image
         src="/images/logo-admin.svg"
         alt="logo-admin"
@@ -59,6 +51,7 @@ const AuthManagement = () => {
             onChange={(e) => {
               handleChange(e);
             }}
+            required
             className="rounded-lg border border-gray-400 h-13.5 px-3"
             placeholder="admin@gmail.com"
           />
@@ -69,6 +62,7 @@ const AuthManagement = () => {
             type="password"
             name="password"
             id="password"
+            required
             value={formValues.password}
             onChange={(e) => handleChange(e)}
             className="rounded-lg border border-gray-400 h-13.5 px-3"

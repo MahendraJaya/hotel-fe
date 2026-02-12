@@ -9,7 +9,7 @@ export interface IGuest {
 export interface ApiResponse<T> {
   success: boolean;
   message: string;
-  data: T;
+  data: T | null;
 }
 
 export interface IToken {
