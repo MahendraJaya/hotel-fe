@@ -27,6 +27,7 @@ const AuthManagement = () => {
 
     setIsSubmitting(false);
   };
+  
   return (
     <div className="bg-white w-136 h-137 rounded-lg border-t-6 flex items-center flex-col py-12 px-17 border-primary">
       <ToastContainer position="top-right" />

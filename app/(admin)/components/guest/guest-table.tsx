@@ -1,13 +1,13 @@
-"use client"
 import { getGuest } from "@/app/services/guest.service";
 import Table from "../../ui/table";
 import { useQuery } from "@tanstack/react-query";
+import { ApiResponse, IGuest } from "@/app/types";
 
-const GuestTable = () => {
-  const { data, isLoading } = useQuery({
-    queryKey: ["guests"],
-    queryFn: () => getGuest(),
-  });
+type TGuestTableProps = {
+  guests: ApiResponse<IGuest[]> | undefined;
+  isLoading: boolean;
+}
+const GuestTable = ({guests, isLoading} : TGuestTableProps) => {
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -25,7 +25,7 @@ const GuestTable = () => {
           </tr>
         </thead>
         <tbody>
-          {data?.data.map((guest) => {
+          {guests?.data?.map((guest) => {
             return (
               <tr key={guest.id}>
                 <td className="border-b border-gray-200 p-4">{guest.id}</td>

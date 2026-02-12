@@ -2,12 +2,15 @@
 import Button from "@/app/component/button";
 import Modal from "../../ui/modal";
 import { useEffect, useState } from "react";
+import useGuest from "@/app/hooks/use-guest";
+import { toast, ToastContainer } from "react-toastify";
 
 type TGuestModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
 };
-const GuestModal = ({ isOpen, onClose }: TGuestModalProps) => {
+const GuestModal = ({ isOpen, onClose, onSuccess }: TGuestModalProps) => {
   const [formValues, setFormValues] = useState<{
     id: number;
     name: string;
@@ -22,22 +25,43 @@ const GuestModal = ({ isOpen, onClose }: TGuestModalProps) => {
     dateOfBirth: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const clearFormValues = () => {
+    setFormValues({
+      id: 0,
+      name: "",
+      address: "",
+      email: "",
+      dateOfBirth: "",
+    });
+  };
+  const { useCreateGuest } = useGuest({
+    onSuc: onSuccess,
+    onClose,
+    onClear: clearFormValues,
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormValues((prevValues) => ({ ...prevValues, [name]: value }));
+    console.log(formValues);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Add your form submission logic here
+    useCreateGuest.mutate({
+      id: formValues.id.toString(),
+      name: formValues.name,
+      address: formValues.address,
+      email: formValues.email,
+      dateOfBirth: formValues.dateOfBirth,
+    });
     setIsSubmitting(false);
-    onClose();
   };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Guest Modal">
+      <ToastContainer position="top-right" />
       <form onSubmit={handleSubmit} className="w-full flex flex-col">
         <div className="admin-input">
           <label htmlFor="id">Guest ID Number</label>
