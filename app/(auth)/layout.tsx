@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import { Inter, Poppins } from "next/font/google";
+import {Poppins } from "next/font/google";
 
 import "../globals.css";
 import QueryProvider from "@/app/lib/queryprovider";
-import { ToastContainer } from "react-toastify";
 
 const inter = Poppins({
   variable: "--font-poppins",

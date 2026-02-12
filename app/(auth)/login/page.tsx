@@ -3,7 +3,7 @@ import Button from "@/app/component/button";
 import useLoginUser from "@/app/hooks/use-auth";
 import Image from "next/image";
 import React, { useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 
 const AuthManagement = () => {
   const [formValues, setFormValues] = useState<{
@@ -11,7 +11,7 @@ const AuthManagement = () => {
     password: string;
   }>({ email: "", password: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const {mutate, isError, isSuccess, data, error} = useLoginUser();
+  const {useLogin} = useLoginUser();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormValues({
@@ -23,7 +23,7 @@ const AuthManagement = () => {
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    mutate(formValues);
+    useLogin.mutate(formValues);
 
     setIsSubmitting(false);
   };

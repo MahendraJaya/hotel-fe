@@ -1,7 +1,7 @@
 import {
   useMutation,
   MutationFunction,
-  useQueryClient,
+  // useQueryClient,
 } from "@tanstack/react-query";
 import { userLogin } from "../services/auth.service";
 import { ApiResponse, IToken } from "../types";
@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
 const useLoginUser = () => {
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
   const mutationFn: MutationFunction<
     ApiResponse<IToken>,
@@ -22,7 +22,7 @@ const useLoginUser = () => {
 
   const router = useRouter();
 
-  const { mutate, isError, isSuccess, data, error } = useMutation<
+  const useLogin = useMutation<
     ApiResponse<IToken>,
     AxiosError<ApiResponse<IToken>>,
     { email: string; password: string }
@@ -42,11 +42,7 @@ const useLoginUser = () => {
   });
 
   return {
-    mutate,
-    isError,
-    isSuccess,
-    data,
-    error,
+    useLogin
   };
 };
 

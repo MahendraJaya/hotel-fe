@@ -4,6 +4,7 @@ import { Inter, Poppins } from "next/font/google";
 import "./../../globals.css";
 import Sidebar from "../ui/sidebar";
 import QueryProvider from "@/app/lib/queryprovider";
+import AuthGuard from "@/app/component/auth-guard";
 
 const inter = Poppins({
   variable: "--font-poppins",
@@ -27,7 +28,9 @@ export default function RootLayout({
         <div className="flex">
           <Sidebar />
           <div className="bg-primary-light flex-1">
-            <QueryProvider>{children}</QueryProvider>
+            <AuthGuard>
+              <QueryProvider>{children}</QueryProvider>
+            </AuthGuard>
           </div>
         </div>
       </body>

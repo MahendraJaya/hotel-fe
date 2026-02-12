@@ -1,4 +1,3 @@
-import { AxiosError } from "axios";
 import { publicApi } from "../lib/api";
 import { ApiResponse, IGuest } from "../types";
 

@@ -3,10 +3,10 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --dark : #111111;
-  --dark-alternate : #1B1918;
-  --primary : #FF5F3F;
-  --primary-light : #F4EBEB;
+  --dark: #111111;
+  --dark-alternate: #1b1918;
+  --primary: #ff5f3f;
+  --primary-light: #f4ebeb;
 }
 
 @theme inline {
@@ -19,13 +19,19 @@
   --font-poppins: var(--font-poppins);
 }
 
-
-*{
+* {
   @apply font-poppins;
 }
-
 
 body {
   background: var(--background);
   color: var(--foreground);
+}
+
+.admin-input {
+  @apply flex flex-col gap-2 w-full mb-5;
+  input,
+  textarea {
+    @apply rounded-lg border border-gray-400 h-10 px-3;
+  }
 }
