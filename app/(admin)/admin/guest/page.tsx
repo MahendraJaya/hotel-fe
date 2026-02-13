@@ -7,17 +7,28 @@ import GuestModal from "../../components/guest/guest-modal";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getGuest } from "@/app/services/guest.service";
+import { IGuest } from "@/app/types";
 
 const GuestManagement = () => {
+  //STATE
   const [isOpen, setIsOpen] = useState(false);
-  const handleCloseModal = () => setIsOpen(false);
+  const [selectedGuest, setSelectedGuest] = useState<IGuest | null>(null);
+
+  //FN
+  const handleCloseModal = () => {
+    setSelectedGuest(null);
+    setIsOpen(false);
+  };
   const handleOpenModal = () => setIsOpen(true);
+  const handleOpenEditModal = (guest: IGuest) => {
+    setSelectedGuest(guest);
+    setIsOpen(true);
+  };
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["guests"],
     queryFn: () => getGuest(),
   });
 
-  
   return (
     <div className="px-14 pt-13 space-y-4 relative">
       <Header title="Guest Management" subtitle="Manage all guest data">
@@ -25,11 +36,12 @@ const GuestManagement = () => {
           <FaPlus /> Add New Guest
         </Button>
       </Header>
-      <GuestTable guests={data} isLoading={isLoading} />
+      <GuestTable guests={data} isLoading={isLoading} onOpenEditModal={handleOpenEditModal} />
       <GuestModal
         isOpen={isOpen}
         onClose={handleCloseModal}
         onSuccess={refetch}
+        guest={selectedGuest}
       />
     </div>
   );

@@ -10,9 +10,27 @@ export const getGuest = async (): Promise<ApiResponse<IGuest[]>> => {
   }
 };
 
-export const createGuest = async (data:IGuest): Promise<ApiResponse<IGuest>> => {
+export const createGuest = async (
+  data: IGuest,
+): Promise<ApiResponse<IGuest>> => {
   try {
-    const res = await privateApi.post<ApiResponse<IGuest>>("/guest", data, { headers: { "Content-Type": "application/json" } });
+    const res = await privateApi.post<ApiResponse<IGuest>>("/guest", data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return res.data;
+  } catch (error) {
+    throw error; // handle error
+  }
+};
+
+export const updateGuest = async (
+  id: string,
+  data: IGuest,
+): Promise<ApiResponse<IGuest>> => {
+  try {
+    const res = await privateApi.put<ApiResponse<IGuest>>(`/guest/${id}`, data, {
+      headers: { "Content-Type": "application/json" }
+    });
     return res.data;
   } catch (error) {
     throw error; // handle error

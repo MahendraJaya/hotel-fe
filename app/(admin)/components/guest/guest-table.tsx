@@ -2,13 +2,19 @@ import { getGuest } from "@/app/services/guest.service";
 import Table from "../../ui/table";
 import { useQuery } from "@tanstack/react-query";
 import { ApiResponse, IGuest } from "@/app/types";
+import Button from "@/app/component/button";
+import { FiPenTool } from "react-icons/fi";
 
 type TGuestTableProps = {
   guests: ApiResponse<IGuest[]> | undefined;
   isLoading: boolean;
-}
-const GuestTable = ({guests, isLoading} : TGuestTableProps) => {
-
+  onOpenEditModal: (guest: IGuest) => void;
+};
+const GuestTable = ({
+  guests,
+  isLoading,
+  onOpenEditModal,
+}: TGuestTableProps) => {
   if (isLoading) return <div>Loading...</div>;
 
   return (
@@ -30,10 +36,18 @@ const GuestTable = ({guests, isLoading} : TGuestTableProps) => {
               <tr key={guest.id}>
                 <td className="border-b border-gray-200 p-4">{guest.id}</td>
                 <td className="border-b border-gray-200 p-4">{guest.name}</td>
-                <td className="border-b border-gray-200 p-4">{guest.address}</td>
+                <td className="border-b border-gray-200 p-4">
+                  {guest.address}
+                </td>
                 <td className="border-b border-gray-200 p-4">{guest.email}</td>
-                <td className="border-b border-gray-200 p-4">{new Date(guest.dateOfBirth).toDateString()}</td>
-                <td className="border-b border-gray-200 p-4">Action</td>
+                <td className="border-b border-gray-200 p-4">
+                  {new Date(guest.dateOfBirth).toDateString()}
+                </td>
+                <td className="border-b border-gray-200 p-4">
+                  <Button onClick={() => onOpenEditModal(guest)}>
+                    <FiPenTool size={24} />
+                  </Button>
+                </td>
               </tr>
             );
           })}

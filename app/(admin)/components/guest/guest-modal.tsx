@@ -4,13 +4,20 @@ import Modal from "../../ui/modal";
 import { useEffect, useState } from "react";
 import useGuest from "@/app/hooks/use-guest";
 import { toast, ToastContainer } from "react-toastify";
+import { IGuest } from "@/app/types";
 
 type TGuestModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
+  guest?: IGuest | null;
 };
-const GuestModal = ({ isOpen, onClose, onSuccess }: TGuestModalProps) => {
+const GuestModal = ({
+  isOpen,
+  onClose,
+  onSuccess,
+  guest,
+}: TGuestModalProps) => {
   const [formValues, setFormValues] = useState<{
     id: number;
     name: string;
@@ -25,6 +32,32 @@ const GuestModal = ({ isOpen, onClose, onSuccess }: TGuestModalProps) => {
     dateOfBirth: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const isEdit = !!guest;
+  useEffect(() => {
+    const v = (guest: IGuest) => {
+      setFormValues({
+        id: Number(guest?.id),
+        name: guest?.name,
+        address: guest?.address,
+        email: guest?.email,
+        dateOfBirth: guest.dateOfBirth.slice(0, 10),
+      });
+    };
+    if (isEdit) {
+      v(guest);
+      console.log(guest);
+    } else {
+      const clear = () =>
+        setFormValues({
+          id: 0,
+          name: "",
+          address: "",
+          email: "",
+          dateOfBirth: "",
+        });
+      clear();
+    }
+  }, [isOpen]);
   const clearFormValues = () => {
     setFormValues({
       id: 0,
@@ -34,7 +67,7 @@ const GuestModal = ({ isOpen, onClose, onSuccess }: TGuestModalProps) => {
       dateOfBirth: "",
     });
   };
-  const { useCreateGuest } = useGuest({
+  const { useCreateGuest, useUpdateGuest } = useGuest({
     onSuc: onSuccess,
     onClose,
     onClear: clearFormValues,
@@ -49,13 +82,23 @@ const GuestModal = ({ isOpen, onClose, onSuccess }: TGuestModalProps) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    useCreateGuest.mutate({
-      id: formValues.id.toString(),
-      name: formValues.name,
-      address: formValues.address,
-      email: formValues.email,
-      dateOfBirth: formValues.dateOfBirth,
-    });
+    if (!isEdit) {
+      useCreateGuest.mutate({
+        id: formValues.id.toString(),
+        name: formValues.name,
+        address: formValues.address,
+        email: formValues.email,
+        dateOfBirth: formValues.dateOfBirth,
+      });
+    } else {
+      useUpdateGuest.mutate({
+        id: formValues.id.toString(),
+        name: formValues.name,
+        address: formValues.address,
+        email: formValues.email,
+        dateOfBirth: formValues.dateOfBirth,
+      });
+    }
     setIsSubmitting(false);
   };
 
