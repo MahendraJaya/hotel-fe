@@ -1,12 +1,17 @@
 "use client";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FaDoorClosed, FaDoorOpen, FaPerson } from "react-icons/fa6";
+import { FaBed, FaDoorClosed, FaDoorOpen, FaPerson } from "react-icons/fa6";
 
 const menu = [
   {
     name: "Guest",
     icon: <FaPerson size={24} />,
+  },
+  {
+    name: "Room",
+    icon: <FaBed size={24} />,
   },
   {
     name: "CheckIn",
@@ -20,8 +25,10 @@ const menu = [
 
 const Sidebar = () => {
   const [curPage, setCurPage] = useState("Guest");
+  const nav = useRouter();
   const handleChangePage = (page: string) => {
     setCurPage(page);
+    nav.push(page.toLowerCase());
   };
   return (
     <div className="w-[320px] min-h-screen border-r border-gray-200 flex flex-col items-center">

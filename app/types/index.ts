@@ -6,6 +6,23 @@ export interface IGuest {
   dateOfBirth: string;
 }
 
+export interface IRoom {
+  id: number;
+  name: string;
+  maxCapacity:number;
+  description: string | null;
+  roomtype: IRoomType;
+  availability: boolean;
+  price: number;
+  floor: number;
+  roomNumber: string;
+}
+
+export interface IRoomType {
+  id: number;
+  name: string;
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   message: string;

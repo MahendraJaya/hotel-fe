@@ -5,7 +5,7 @@ import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 
 type TUseGuestProps = {
-  onSuc?: () => void;
+  onSuc?: () => void; // fungsi onSuccess
   onClose?: () => void;
   onClear: () => void;
 };
