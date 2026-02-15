@@ -1,35 +1,43 @@
 "use client";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { FaBed, FaDoorClosed, FaDoorOpen, FaPerson } from "react-icons/fa6";
 
 const menu = [
   {
     name: "Guest",
+    at: "guest",
     icon: <FaPerson size={24} />,
   },
   {
     name: "Room",
+    at: "room",
     icon: <FaBed size={24} />,
   },
   {
     name: "CheckIn",
+    at: "checkin",
     icon: <FaDoorOpen size={24} />,
   },
   {
     name: "CheckOut",
+    at: "checkout",
     icon: <FaDoorClosed size={24} />,
   },
 ];
 
 const Sidebar = () => {
-  const [curPage, setCurPage] = useState("Guest");
+  const pathname = usePathname();
+  const [curPage, setCurPage] = useState(pathname.split("/")[2]);
   const nav = useRouter();
   const handleChangePage = (page: string) => {
     setCurPage(page);
     nav.push(page.toLowerCase());
   };
+  useEffect(() => {
+    console.log(curPage);
+  }, [curPage]);
   return (
     <div className="w-[320px] min-h-screen border-r border-gray-200 flex flex-col items-center">
       <Image
@@ -43,9 +51,9 @@ const Sidebar = () => {
         {menu.map((item, index) => {
           return (
             <div
-              className={`cursor-pointer w-full h-12 ${item.name == curPage ? "bg-primary/10 text-primary" : "text-black hover:bg-primary/10 transition duration-200 hover:text-primary"} font-medium rounded-md px-3 py-2  flex gap-2 items-center`}
+              className={`cursor-pointer w-full h-12 ${item.at == curPage ? "bg-primary/10 text-primary" : "text-black hover:bg-primary/10 transition duration-200 hover:text-primary"} font-medium rounded-md px-3 py-2  flex gap-2 items-center`}
               key={index}
-              onClick={() => handleChangePage(item.name)}
+              onClick={() => handleChangePage(item.at)}
             >
               {item.icon} {item.name}
             </div>

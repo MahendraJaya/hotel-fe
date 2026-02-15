@@ -1,0 +1,50 @@
+import Button from "@/app/component/button";
+import Table from "../../ui/table";
+import { PiFileMagnifyingGlass } from "react-icons/pi";
+import { ApiResponse, IBooking } from "@/app/types";
+
+type TCheckinTableProps = {
+  bookings: ApiResponse<IBooking[]> | undefined;
+  isLoading: boolean;
+  onOpen: (booking: IBooking) => void;
+};
+
+const CheckinTable = ({ bookings, isLoading, onOpen }: TCheckinTableProps) => {
+  if (isLoading) return <div>Loading ...</div>;
+  return (
+    <div>
+      <Table>
+        <thead className="text-center">
+          <tr key={"checkin-table-head"}>
+            <th className="border-b border-gray-200 p-4">Booking Number</th>
+            <th className="border-b border-gray-200 p-4">Guest Number</th>
+            <th className="border-b border-gray-200 p-4">Status</th>
+            <th className="border-b border-gray-200 p-4">Action</th>
+          </tr>
+        </thead>
+        <tbody className="text-center">
+          {bookings?.data?.map((booking) => {
+            return (
+              <tr key={booking.id}>
+                <td className="border-b border-gray-200 p-4">{booking.id}</td>
+                <td className="border-b border-gray-200 p-4">
+                  {booking.guest.id}
+                </td>
+                <td className="border-b border-gray-200 p-4">
+                  {booking.status}
+                </td>
+                <td className="border-b border-gray-200 p-4">
+                  <Button onClick={() => onOpen(booking)}>
+                    <PiFileMagnifyingGlass /> Detail
+                  </Button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </Table>
+    </div>
+  );
+};
+
+export default CheckinTable;
