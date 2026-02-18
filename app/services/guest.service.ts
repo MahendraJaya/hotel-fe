@@ -1,9 +1,17 @@
 import { privateApi, publicApi } from "../lib/api";
 import { ApiResponse, IGuest } from "../types";
 
-export const getGuest = async (): Promise<ApiResponse<IGuest[]>> => {
+export const getGuest = async (page:number): Promise<ApiResponse<IGuest[]>> => {
   try {
-    const res = await publicApi.get<ApiResponse<IGuest[]>>("/guest");
+    const res = await publicApi.get<ApiResponse<IGuest[]>>("/guest", {params: {page}});
+    return res.data;
+  } catch (error) {
+    throw error; // handle error
+  }
+};
+export const getAllGuest = async (): Promise<ApiResponse<IGuest[]>> => {
+  try {
+    const res = await publicApi.get<ApiResponse<IGuest[]>>("/guest/all");
     return res.data;
   } catch (error) {
     throw error; // handle error

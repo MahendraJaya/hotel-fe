@@ -26,9 +26,21 @@ export interface IBooking {
   bookingDate: string;
   status : "cancel" | "pending" | "waiting" | "checkin" | "checkout";
   totalGuest: number;
+  totalDay: number;
   room: IRoom;
 }
 
+export interface ICreateBookingPayload {
+  id: string;
+  guestId: string;
+  checkInDate: string;
+  checkOutDate: string;
+  bookingDate: string;
+  status : string;
+  totalGuest: number;
+  totalDay: number;
+  roomId: string;
+}
 export interface IRoomType {
   id: number;
   name: string;
@@ -38,6 +50,7 @@ export interface ApiResponse<T> {
   success: boolean;
   message: string;
   data: T | null;
+  meta?: {total: number, page: number, limit: number, totalPages: number};
 }
 
 export interface IToken {

@@ -9,18 +9,25 @@ import RoomTable from "../../components/room/room-table";
 import RoomModal from "../../components/room/room-modal";
 import { getRoomType } from "@/app/services/roomType.service";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import RoomBookingModal from "../../components/room/room-booking-modal";
+import { IRoom } from "@/app/types";
 
 const RoomManagement = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenBooking, setIsOpenBooking] = useState(false);
+  const [roomId, setRoomId] = useState<IRoom | null>(null);
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
   console.log(pathname, searchParams);
 
   const roomtype = searchParams.get('roomtype') || ''
+  const startdate = searchParams.get('startdate') || ''
+  const enddate = searchParams.get('enddate') || ''
+
   const { data:RoomData, isLoading:RoomLoading } = useQuery({
-    queryKey: ["rooms", roomtype],
-    queryFn: () => getRoom(roomtype),
+    queryKey: ["rooms", roomtype, startdate, enddate],
+    queryFn: () => getRoom(roomtype, startdate, enddate),
   });
 
   const { data:RoomTypeData } = useQuery({
@@ -35,28 +42,45 @@ const RoomManagement = () => {
   const handleCloseModal = () => {
     setIsOpen(false);
   };
+  const handleOpenModalBooking = (roomId: IRoom) => {
+    setRoomId(roomId);
+    setIsOpenBooking(true);
+  };
+  const handleCloseModalBooking = () => {
+    setIsOpenBooking(false);
+  };
 
-   const handleUpdateParams = (key:string, value:string) => {
-    const params = new URLSearchParams(searchParams)
-    params.set(key, value)
-    router.push(`${pathname}?${params.toString()}`)
+   const handleUpdateParams = (params: Record<string, string>) => {
+    const newParams = new URLSearchParams(searchParams)
+    Object.entries(params).forEach(([key, value]) => {
+      newParams.set(key, value)
+    })
+    router.push(`${pathname}?${newParams.toString()}`)
     handleCloseModal();
   }
 
   return (
     <div className="px-14 pt-13 space-y-4 relative">
-      <Header title="Room Management" subtitle="Manage all room for guest">
+      <Header title="Room Management" subtitle="Manage all room guest booking">
         <Button onClick={handleOpenModal}>
           <FaMagnifyingGlass /> Search
         </Button>
       </Header>
-      <RoomTable rooms={RoomData} isLoading={RoomLoading} />
+      <RoomTable rooms={RoomData} isLoading={RoomLoading} onOpenModalBooking={handleOpenModalBooking} />
       <RoomModal
         isOpen={isOpen}
         onClose={handleCloseModal}
         roomType={RoomTypeData}
         onSearch={handleUpdateParams}
       />
+      <RoomBookingModal
+        isOpen={isOpenBooking}
+        onClose={handleCloseModalBooking}
+        roomId={roomId}
+        startdate={startdate}
+        enddate={enddate}
+      />
+
     </div>
   );
 };

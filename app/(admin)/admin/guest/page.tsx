@@ -8,11 +8,15 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getGuest } from "@/app/services/guest.service";
 import { IGuest } from "@/app/types";
+import Pagination from "@/app/component/pagination";
+import { useSearchParams } from "next/navigation";
 
 const GuestManagement = () => {
   //STATE
   const [isOpen, setIsOpen] = useState(false);
   const [selectedGuest, setSelectedGuest] = useState<IGuest | null>(null);
+  const searchParams = useSearchParams();
+  const currentPage = Number(searchParams.get("page")) || 1;
 
   //FN
   const handleCloseModal = () => {
@@ -25,9 +29,13 @@ const GuestManagement = () => {
     setIsOpen(true);
   };
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ["guests"],
-    queryFn: () => getGuest(),
+    queryKey: ["guests", searchParams.get("page")],
+    queryFn: () => getGuest(currentPage),
   });
+
+  // useState(() => {
+  //   refetch();
+  // }, [currentPage])
 
   return (
     <div className="px-14 pt-13 space-y-4 relative">
@@ -43,6 +51,7 @@ const GuestManagement = () => {
         onSuccess={refetch}
         guest={selectedGuest}
       />
+      <Pagination totalPages={data?.meta?.totalPages || 1} />
     </div>
   );
 };
