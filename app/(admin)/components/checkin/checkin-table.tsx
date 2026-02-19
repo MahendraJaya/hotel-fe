@@ -28,7 +28,7 @@ const CheckinTable = ({ bookings, isLoading, onOpen }: TCheckinTableProps) => {
               <tr key={booking.id}>
                 <td className="border-b border-gray-200 p-4">{booking.id}</td>
                 <td className="border-b border-gray-200 p-4">
-                  {booking.guest.id}
+                  {booking.guest.id} ({booking.guest.name})
                 </td>
                 <td className="border-b border-gray-200 p-4">
                   {booking.status}

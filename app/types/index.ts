@@ -28,6 +28,18 @@ export interface IBooking {
   totalGuest: number;
   totalDay: number;
   room: IRoom;
+  payment: IPayment;
+}
+
+export interface IPayment {
+  id: string;
+  bookingId: string;
+  total: number;
+  paymentDate: string;
+  paymentMethod: string;
+  status: string;
+  paymentToken: string;
+  paymentUrl: string;
 }
 
 export interface ICreateBookingPayload {

@@ -4,6 +4,7 @@ import Button from "@/app/component/button";
 import { IBooking } from "@/app/types";
 import useBooking from "@/app/hooks/use-booking";
 import { useState } from "react";
+import { cekMidtransStatus } from "@/app/services/booking.service";
 
 type TCheckinModalProps = {
   isOpen: boolean;
@@ -11,15 +12,24 @@ type TCheckinModalProps = {
   booking: IBooking | null;
 };
 const CheckinModal = ({ isOpen, onClose, booking }: TCheckinModalProps) => {
-  const [status, setStatus] = useState("checkin");
+  const [status, setStatus] = useState("pay");
   const isNull = !!booking;
-  const { updateBooking } = useBooking();
+  const { updateBooking } = useBooking({});
 
   if (!isNull) return <></>;
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // alert(status);
-    updateBooking.mutate({ id: booking.id.toString(), status: status.toString() });
+    // updateBooking.mutate({
+    //   id: booking.id.toString(),
+    //   status: status.toString(),
+    // });
+    if(status === "pay"){
+
+    }else if(status == "check"){
+      const data = await cekMidtransStatus(booking.id.toString());
+      window.open(data.data?.paymentUrl);
+    }
   };
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Guest Checkin Detail">
@@ -30,13 +40,23 @@ const CheckinModal = ({ isOpen, onClose, booking }: TCheckinModalProps) => {
           <input type="text" name="id" id="id" readOnly value={booking.id} />
         </div>
         <div className="admin-input">
+          <label htmlFor="id">Room</label>
+          <input
+            type="text"
+            name="id"
+            id="id"
+            readOnly
+            value={`${booking.room.name} | ${booking.room.roomNumber}`}
+          />
+        </div>
+        <div className="admin-input">
           <label htmlFor="id">Guest Id Number</label>
           <input
             type="text"
             name="id"
             id="id"
             readOnly
-            value={booking.guest.id}
+            value={`${booking.guest.id} (${booking.guest.name})`}
           />
         </div>
         <div className="admin-input">
@@ -60,16 +80,6 @@ const CheckinModal = ({ isOpen, onClose, booking }: TCheckinModalProps) => {
           />
         </div>
         <div className="admin-input">
-          <label htmlFor="id">Booking Date</label>
-          <input
-            type="text"
-            name="id"
-            id="id"
-            readOnly
-            value={new Date(booking.bookingDate).toDateString()}
-          />
-        </div>
-        <div className="admin-input">
           <label htmlFor="id">Status</label>
           <input
             type="text"
@@ -90,13 +100,13 @@ const CheckinModal = ({ isOpen, onClose, booking }: TCheckinModalProps) => {
           />
         </div>
         <div className="admin-input">
-          <label htmlFor="id">Room</label>
+          <label htmlFor="id">Total Payment</label>
           <input
             type="text"
             name="id"
             id="id"
             readOnly
-            value={`${booking.room.name} | ${booking.room.roomNumber}`}
+            value={booking.room.price * booking.totalDay}
           />
         </div>
         <div className="flex justify-end gap-2">
@@ -106,15 +116,27 @@ const CheckinModal = ({ isOpen, onClose, booking }: TCheckinModalProps) => {
             className="w-64"
             onClick={() => setStatus("cancel")}
           >
-            Cancel
+            Cancel Book
           </Button>
-          <Button
-            type="submit"
-            className="w-64"
-            onClick={() => setStatus("checkin")}
-          >
-            CheckIn
-          </Button>
+
+          {booking.payment == null && (
+            <Button
+              type="submit"
+              className="w-64"
+              onClick={() => setStatus("pay")}
+            >
+              Pay Checkin
+            </Button>
+          )}
+          {booking.payment != null && (
+            <Button
+              type="submit"
+              className="w-64"
+              onClick={() => setStatus("check")}
+            >
+              Check Payment
+            </Button>
+          )}
         </div>
       </form>
     </Modal>

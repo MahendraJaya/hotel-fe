@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FaBed, FaDoorClosed, FaDoorOpen, FaPerson } from "react-icons/fa6";
+import { FaBed, FaDoorClosed, FaDoorOpen, FaPerson, FaTicket } from "react-icons/fa6";
 
 const menu = [
   {
@@ -14,6 +14,11 @@ const menu = [
     name: "Room",
     at: "room",
     icon: <FaBed size={24} />,
+  },
+  {
+    name: "booking",
+    at: "booking",
+    icon: <FaTicket size={24} />,
   },
   {
     name: "CheckIn",

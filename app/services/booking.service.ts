@@ -1,5 +1,6 @@
+import axios from "axios";
 import { privateApi } from "../lib/api";
-import { ApiResponse, IBooking, ICreateBookingPayload } from "../types";
+import { ApiResponse, IBooking, ICreateBookingPayload, IPayment } from "../types";
 
 export const getBookingCheckin = async (): Promise<ApiResponse<IBooking[]>> => {
   try {
@@ -10,7 +11,6 @@ export const getBookingCheckin = async (): Promise<ApiResponse<IBooking[]>> => {
     throw error; // handle error
   }
 };
-
 
 export const updateStatusBooking = async (
   id: string,
@@ -28,13 +28,26 @@ export const updateStatusBooking = async (
   }
 };
 
+export const cekMidtransStatus = async (
+  id: string,
+): Promise<ApiResponse<IPayment>> => {
+  try {
+     const res = await privateApi.get<ApiResponse<IPayment>>(
+    `/payment/check/${id}`,
+  );
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const createBooking = async (
   booking: ICreateBookingPayload,
 ): Promise<ApiResponse<IBooking>> => {
   try {
     const res = await privateApi.post<ApiResponse<IBooking>>(
       `/booking/`,
-      booking
+      booking,
     );
     return res.data;
   } catch (error) {

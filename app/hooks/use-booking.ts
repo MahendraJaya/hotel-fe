@@ -3,7 +3,7 @@ import { MutationFunction, useMutation } from "@tanstack/react-query";
 import { IBooking } from "../types";
 import { createBooking, updateStatusBooking } from "../services/booking.service";
 import { AxiosError } from "axios";
-type TUseBookingProps = { onSuc: () => void };
+type TUseBookingProps = { onSuc?: () => void };
 const useBooking = ({onSuc} : TUseBookingProps) => {
   const updateBookingFn: MutationFunction<
     ApiResponse<IBooking>,
