@@ -15,3 +15,16 @@ export const payBooking = async (
     throw error;
   }
 };
+
+export const cekMidtransStatus = async (
+  id: string,
+): Promise<ApiResponse<IPayment>> => {
+  try {
+     const res = await privateApi.get<ApiResponse<IPayment>>(
+    `/payment/check/${id}`,
+  );
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};

@@ -29,7 +29,7 @@ const useBooking = ({onSuc} : TUseBookingProps) => {
   >({
     mutationFn: updateBookingFn,
     onSuccess: (data) => {
-      console.log(status);
+      onSuc?.();
     },
     onError: (error) => {
       console.log("Erro while updating booking : ", error);

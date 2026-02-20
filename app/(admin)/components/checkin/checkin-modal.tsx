@@ -2,33 +2,33 @@ import { ToastContainer } from "react-toastify";
 import Modal from "../../ui/modal";
 import Button from "@/app/component/button";
 import { IBooking } from "@/app/types";
-import useBooking from "@/app/hooks/use-booking";
 import { useState } from "react";
-import { cekMidtransStatus } from "@/app/services/booking.service";
+import { cekMidtransStatus } from "@/app/services/payment.service";
+import usePayment from "@/app/hooks/use-payment";
+import useBooking from "@/app/hooks/use-booking";
 
 type TCheckinModalProps = {
   isOpen: boolean;
   onClose: () => void;
   booking: IBooking | null;
+  onSuccess: ()=> Promise<void>;
 };
-const CheckinModal = ({ isOpen, onClose, booking }: TCheckinModalProps) => {
+const CheckinModal = ({ isOpen, onClose, booking, onSuccess }: TCheckinModalProps) => {
   const [status, setStatus] = useState("pay");
   const isNull = !!booking;
-  const { updateBooking } = useBooking({});
+  const { createPayment } = usePayment();
+  const { updateBooking } = useBooking({onSuc: onSuccess});
 
   if (!isNull) return <></>;
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // alert(status);
-    // updateBooking.mutate({
-    //   id: booking.id.toString(),
-    //   status: status.toString(),
-    // });
-    if(status === "pay"){
-
-    }else if(status == "check"){
+    if (status === "pay") {
+      createPayment.mutate({ bookingId: booking.id });
+    } else if (status == "check") {
       const data = await cekMidtransStatus(booking.id.toString());
       window.open(data.data?.paymentUrl);
+    } else if (status == "checkin") {
+      updateBooking.mutate({ id: booking.id, status: "checkin" });
     }
   };
   return (
@@ -128,13 +128,22 @@ const CheckinModal = ({ isOpen, onClose, booking }: TCheckinModalProps) => {
               Pay Checkin
             </Button>
           )}
-          {booking.payment != null && (
+          {booking.payment.status == "Waiting" && (
             <Button
               type="submit"
               className="w-64"
               onClick={() => setStatus("check")}
             >
               Check Payment
+            </Button>
+          )}
+          {booking.payment.status == "success" && (
+            <Button
+              type="submit"
+              className="w-64"
+              onClick={() => setStatus("checkin")}
+            >
+              Check in Guest
             </Button>
           )}
         </div>

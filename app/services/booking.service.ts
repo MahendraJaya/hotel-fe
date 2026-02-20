@@ -28,18 +28,7 @@ export const updateStatusBooking = async (
   }
 };
 
-export const cekMidtransStatus = async (
-  id: string,
-): Promise<ApiResponse<IPayment>> => {
-  try {
-     const res = await privateApi.get<ApiResponse<IPayment>>(
-    `/payment/check/${id}`,
-  );
-    return res.data;
-  } catch (error) {
-    throw error;
-  }
-};
+
 
 export const createBooking = async (
   booking: ICreateBookingPayload,
