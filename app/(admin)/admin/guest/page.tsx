@@ -10,46 +10,32 @@ import { getGuest } from "@/app/services/guest.service";
 import { IGuest } from "@/app/types";
 import Pagination from "@/app/component/pagination";
 import { useSearchParams } from "next/navigation";
+import useModal from "@/app/hooks/use-modal";
 
 const GuestManagement = () => {
   //STATE
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedGuest, setSelectedGuest] = useState<IGuest | null>(null);
+  const {isOpen, selectedData, onClose, onOpen, onOpenEdit} = useModal<IGuest>({data: null})
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
 
-  //FN
-  const handleCloseModal = () => {
-    setSelectedGuest(null);
-    setIsOpen(false);
-  };
-  const handleOpenModal = () => setIsOpen(true);
-  const handleOpenEditModal = (guest: IGuest) => {
-    setSelectedGuest(guest);
-    setIsOpen(true);
-  };
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["guests", searchParams.get("page")],
     queryFn: () => getGuest(currentPage),
   });
 
-  // useState(() => {
-  //   refetch();
-  // }, [currentPage])
-
   return (
     <div className="px-14 pt-13 space-y-4 relative">
       <Header title="Guest Management" subtitle="Manage all guest data">
-        <Button onClick={handleOpenModal}>
+        <Button onClick={onOpen}>
           <FaPlus /> Add New Guest
         </Button>
       </Header>
-      <GuestTable guests={data} isLoading={isLoading} onOpenEditModal={handleOpenEditModal} />
+      <GuestTable guests={data} isLoading={isLoading} onOpenEditModal={onOpenEdit} />
       <GuestModal
         isOpen={isOpen}
-        onClose={handleCloseModal}
+        onClose={onClose}
         onSuccess={refetch}
-        guest={selectedGuest}
+        guest={selectedData}
       />
       <Pagination totalPages={data?.meta?.totalPages || 1} />
     </div>

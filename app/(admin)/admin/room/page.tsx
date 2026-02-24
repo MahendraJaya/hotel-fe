@@ -11,11 +11,11 @@ import { getRoomType } from "@/app/services/roomType.service";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import RoomBookingModal from "../../components/room/room-booking-modal";
 import { IRoom } from "@/app/types";
+import useModal from "@/app/hooks/use-modal";
 
 const RoomManagement = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isOpenBooking, setIsOpenBooking] = useState(false);
-  const [roomId, setRoomId] = useState<IRoom | null>(null);
+  const {isOpen, onClose, onOpen} = useModal<IRoom>({data: null});
+  const {isOpen:isOpenBooking, onClose:onCloseBooking, onOpenEdit:onOpenBooking, selectedData:bookingData} = useModal<IRoom>({data: null});
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -35,48 +35,33 @@ const RoomManagement = () => {
     queryFn: () => getRoomType(),
   });
 
-
-  const handleOpenModal = () => {
-    setIsOpen(true);
-  };
-  const handleCloseModal = () => {
-    setIsOpen(false);
-  };
-  const handleOpenModalBooking = (roomId: IRoom) => {
-    setRoomId(roomId);
-    setIsOpenBooking(true);
-  };
-  const handleCloseModalBooking = () => {
-    setIsOpenBooking(false);
-  };
-
    const handleUpdateParams = (params: Record<string, string>) => {
     const newParams = new URLSearchParams(searchParams)
     Object.entries(params).forEach(([key, value]) => {
       newParams.set(key, value)
     })
     router.push(`${pathname}?${newParams.toString()}`)
-    handleCloseModal();
+    onClose();
   }
 
   return (
     <div className="px-14 pt-13 space-y-4 relative">
       <Header title="Room Management" subtitle="Manage all room guest booking">
-        <Button onClick={handleOpenModal}>
+        <Button onClick={onOpen}>
           <FaMagnifyingGlass /> Search
         </Button>
       </Header>
-      <RoomTable rooms={RoomData} isLoading={RoomLoading} onOpenModalBooking={handleOpenModalBooking} />
+      <RoomTable rooms={RoomData} isLoading={RoomLoading} onOpenModalBooking={onOpenBooking} />
       <RoomModal
         isOpen={isOpen}
-        onClose={handleCloseModal}
+        onClose={onClose}
         roomType={RoomTypeData}
         onSearch={handleUpdateParams}
       />
       <RoomBookingModal
         isOpen={isOpenBooking}
-        onClose={handleCloseModalBooking}
-        roomId={roomId}
+        onClose={onCloseBooking}
+        roomId={bookingData}
         startdate={startdate}
         enddate={enddate}
       />

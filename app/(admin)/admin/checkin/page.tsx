@@ -3,26 +3,20 @@ import Header from "../../ui/header";
 import CheckinTable from "../../components/checkin/checkin-table";
 import { useQuery } from "@tanstack/react-query";
 import { getBookingCheckin } from "@/app/services/booking.service";
-import { useState } from "react";
 import CheckinModal from "../../components/checkin/checkin-modal";
 import { IBooking } from "@/app/types";
 import Button from "@/app/component/button";
+import useModal from "@/app/hooks/use-modal";
 
 const CheckinManagement = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedCheckin, setSelectedCheckin] = useState<IBooking | null>(null);
-  const handleOpenModal = (booking: IBooking) => {
-    setSelectedCheckin(booking);
-    setIsOpen(true)
-  };
-  const handleCloseModal = () => setIsOpen(false);
+  const {isOpen, onClose, onOpenEdit, selectedData} = useModal<IBooking>({data : null});
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["checkin"],
     queryFn: getBookingCheckin,
   });
-
+  
   const handleOnSuccess = async() => {
-    handleCloseModal();
+    onClose();
     refetch();
   }
 
@@ -31,15 +25,8 @@ const CheckinManagement = () => {
       <Header title="Checkin Management" subtitle="Manage guest room checkin">
         <Button onClick={handleOnSuccess}>Tes fetch</Button>
       </Header>
-      <CheckinTable bookings={data} isLoading={isLoading} onOpen={handleOpenModal} />
-      <CheckinModal isOpen={isOpen} onClose={handleCloseModal} booking={selectedCheckin} onSuccess={handleOnSuccess}/>
-      {/* <GuestTable guests={data} isLoading={isLoading} onOpenEditModal={handleOpenEditModal} />
-      <GuestModal
-        isOpen={isOpen}
-        onClose={handleCloseModal}
-        onSuccess={refetch}
-        guest={selectedGuest}
-      /> */}
+      <CheckinTable bookings={data} isLoading={isLoading} onOpen={onOpenEdit} />
+      <CheckinModal isOpen={isOpen} onClose={onClose} booking={selectedData} onSuccess={handleOnSuccess}/>
     </div>
   );
 };
