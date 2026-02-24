@@ -4,7 +4,6 @@ import Header from "../../ui/header";
 import { FaPlus } from "react-icons/fa6";
 import GuestTable from "../../components/guest/guest-table";
 import GuestModal from "../../components/guest/guest-modal";
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getGuest } from "@/app/services/guest.service";
 import { IGuest } from "@/app/types";

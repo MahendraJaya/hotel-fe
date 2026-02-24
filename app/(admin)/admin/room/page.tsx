@@ -1,7 +1,6 @@
 "use client";
 import { getRoom } from "@/app/services/room.service";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 import Header from "../../ui/header";
 import Button from "@/app/component/button";
 import { FaMagnifyingGlass } from "react-icons/fa6";

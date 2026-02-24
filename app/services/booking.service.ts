@@ -1,11 +1,20 @@
-import axios from "axios";
 import { privateApi } from "../lib/api";
-import { ApiResponse, IBooking, ICreateBookingPayload, IPayment } from "../types";
+import { ApiResponse, IBooking, ICreateBookingPayload} from "../types";
 
 export const getBookingCheckin = async (): Promise<ApiResponse<IBooking[]>> => {
   try {
     const res =
       await privateApi.get<ApiResponse<IBooking[]>>("/booking/checkin");
+    return res.data;
+  } catch (error) {
+    throw error; // handle error
+  }
+};
+
+export const getBookingCheckOut = async (): Promise<ApiResponse<IBooking[]>> => {
+  try {
+    const res =
+      await privateApi.get<ApiResponse<IBooking[]>>("/booking/checkout");
     return res.data;
   } catch (error) {
     throw error; // handle error
