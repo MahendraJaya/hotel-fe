@@ -2,7 +2,14 @@
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FaBed, FaDoorClosed, FaDoorOpen, FaPerson, FaTicket } from "react-icons/fa6";
+import {
+  FaBed,
+  FaDoorClosed,
+  FaDoorOpen,
+  FaPerson,
+  FaTicket,
+} from "react-icons/fa6";
+import { FiLogOut } from "react-icons/fi";
 
 const menu = [
   {
@@ -32,6 +39,8 @@ const menu = [
   },
 ];
 
+
+
 const Sidebar = () => {
   const pathname = usePathname();
   const [curPage, setCurPage] = useState(pathname.split("/")[2]);
@@ -40,6 +49,10 @@ const Sidebar = () => {
     setCurPage(page);
     nav.push(page.toLowerCase());
   };
+  const handleLogout = () => {
+  localStorage.removeItem("token");
+    nav.push("/login");
+}
   useEffect(() => {
     console.log(curPage);
   }, [curPage]);
@@ -64,6 +77,13 @@ const Sidebar = () => {
             </div>
           );
         })}
+      </div>
+      <div className="mt-12 px-5.5 flex flex-col flex-1 justify-end align-bottom  w-full gap-2.5">
+        <div
+          className={`cursor-pointer w-full h-12 text-black hover:bg-primary/10 transition duration-200 hover:text-primary font-medium rounded-md px-3 py-2 mb-10 flex gap-2 items-center`} onClick={() => handleLogout()}
+        >
+          <FiLogOut size={24} /> Log Out
+        </div>
       </div>
     </div>
   );

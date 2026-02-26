@@ -1,3 +1,4 @@
+"use client"
 import Header from "../../ui/header";
 import CheckoutTable from "../../components/checkout/checkout-table";
 import { useQuery } from "@tanstack/react-query";
